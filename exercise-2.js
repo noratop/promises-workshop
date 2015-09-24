@@ -11,30 +11,25 @@ function delay(duration){
 }
 
 function getFirstChar(inputStr){
-    return new Promise(function(resolve){
-        resolve(inputStr[0]);
+    return delay(500).then(function(){
+        return inputStr[0];
     });
 }
 
 
-delay(500).then(function(){
-    return getFirstChar('hello')
-}).then(console.log);
+getFirstChar('hello').then(console.log);
 
 // Create a function called getLastChar that takes a string, and 
 // returns a Promise that will be resolved with the last character of the passed string, 
 // after 500 milliseconds. You may use the delay function from the previous exercise.
 
 function getLastChar(inputStr){
-    return new Promise(function(resolve){
-        resolve(inputStr[inputStr.length - 1]);
+    return delay(500).then(function(){
+        return inputStr[inputStr.length - 1];
     });
 }
 
-
-delay(500).then(function(){
-    return getLastChar('hello');
-}).then(console.log);
+getLastChar('hello').then(console.log);
 
 // Create a function called getFirstAndLastCharSeq that takes a string, 
 // and returns a Promise that will be resolved with the first and last character 
@@ -46,10 +41,8 @@ function getFirstAndLastCharSeq(inputStr){
         firstChar = res1;
         return getLastChar(inputStr);
     }).then(function(lastChar){
-        return new Promise(function(resolve){
-            resolve(firstChar+lastChar);
+        return firstChar+lastChar;
         });
-    });
 }
 
 getFirstAndLastCharSeq('world').then(console.log);
@@ -62,11 +55,9 @@ getFirstAndLastCharSeq('world').then(console.log);
 function getFirstAndLastCharParallel(inputStr){
     var fistCharPromise = getFirstChar(inputStr);
     var lastCharPromise = getLastChar(inputStr);
-    return Promise.join(fistCharPromise,lastCharPromise).then(function(res){
-        return new Promise(function(resolve){
-            resolve(res[0] + res[1]);
+    return Promise.join(fistCharPromise,lastCharPromise,function(firstChar,lastChar){
+        return firstChar + lastChar;
         });
-    });
 }
 
 getFirstAndLastCharParallel('hello world').then(console.log);
