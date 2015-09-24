@@ -21,3 +21,16 @@ delay(500).then(function(){
     return getFirstChar('hello')
 }).then(console.log);
 
+
+
+function getLastChar(inputStr){
+    return new Promise(function(resolve){
+        resolve(inputStr[inputStr.length - 1]);
+    });
+}
+
+
+delay(500).then(function(){
+    return getLastChar('hello');
+}).then(console.log);
+
