@@ -28,10 +28,11 @@ function distanceTo(point1, point2, radius) {
 };
 
 
-var issPositionPromise = request('http://api.open-notify.org/iss-now.json').spread(function(response,body){
-    var issLatLong = JSON.parse(body);
-    issLatLong.lat = issLatLong.iss_position.latitude;
-    issLatLong.lng = issLatLong.iss_position.longitude;
+var issPositionPromise = request('http://api.open-notify.org/iss-now.json').spread(function(result,body){
+    //console.log(result);
+    var issLatLong = JSON.parse(body).iss_position;
+    issLatLong.lat = issLatLong.latitude;
+    issLatLong.lng = issLatLong.longitude;
     return issLatLong;
 });
 
@@ -41,17 +42,23 @@ console.log('What is your current location ?');
 promptPromise.start();
 
 var userLocationPromise = promptPromise.getAsync('location').then(function(result){
+    //console.log(result);
     return request('https://maps.googleapis.com/maps/api/geocode/json?address='+result.location);
-}).spread(function(response,body){
-    return JSON.parse(body).results[0].geometry.location;
+}).spread(function(result,body){
+    var userData = JSON.parse(body).results[0];
+    return userData.geometry.location;
 });
 
-Promise.join(issPositionPromise,userLocationPromise).then(function(result){
-   console.log(result);
+Promise.join(issPositionPromise,userLocationPromise,function(iss,user){
+//   console.log(iss);
+//   console.log(user);
+   return distanceTo(iss,user);
+}).then(function(result){
+    console.log('You are located '+ Math.round(result) + 'km from the ISS station');
+}).catch(function(error){
+    console.log('An error has occured: ' + error);
 });
 
 
 
-// console.log('You are located '+ Math.round(distance) + 'km from the ISS station');
-// console.log('An error has occured: ' + error);
 
