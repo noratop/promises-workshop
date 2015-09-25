@@ -6,7 +6,12 @@ var APIKey = '814d0e373e7fe92fe71b94abdddd015b';
 
 request('http://api.wordnik.com:80/v4/words.json/randomWords?hasDictionaryDef=true&minCorpusCount=0&maxCorpusCount=-1&minDictionaryCount=1&maxDictionaryCount=-1&minLength=5&maxLength=-1&limit=5&api_key=a2a73e7b926c924fad7001ca3111acd55af2ffabf50eb4ae5')
 .spread(function(result,body){
-    return JSON.parse(body);
+    try {
+        return JSON.parse(body);
+    }
+    catch (err){
+        console.log("Sorry, an error has occurred");
+    }
 }).map(function(item, index, arrayLength) {
     var word = item.word;
     return request('http://words.bighugelabs.com/api/2/'+ APIKey +'/'+item.word+'/json').spread(function(result, body){
